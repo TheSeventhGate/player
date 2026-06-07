@@ -188,13 +188,20 @@ export class Camera6DOF
     constructor(scene)
     {
 
-        // world
-        //   └── origin
-        //         ├── mesh
-        //         ├── shipModel
-        //         ├── camMount
-        //         ├── camTarget
-        //         └── camUpMount
+        // SCENE (The Global Container)
+        // │
+        // ├── worldGroup [MOVES ↔️] (The "Universe" container)
+        // │   │   // Everything inside here slides in reverse to your inputs
+        // │   ├── theGrid
+        // │   ├── testSurfaceObj (The Floor)
+        // │   └── [Planets / Stars / Stations] (Future objects)
+        // │
+        // └── player.origin [ROTATES 🔄] (Fixed at 0, 0, 0)
+        //     │   // This is YOUR ship. It never leaves 0,0,0. It only spins.
+        //     ├── mesh (Debug Box)
+        //     ├── shapeLines (Debug Edges)
+        //     ├── shipModel (The Actual OBJ)
+        //     └── camera [FOLLOWS 🎥] (Slave to player movement)
 
         // timing
         this.dt = 0.0;
