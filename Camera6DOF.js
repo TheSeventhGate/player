@@ -319,7 +319,7 @@ export class Camera6DOF
         
         // velocities + thrusts + speeds
         this.accelSpeed    = 6.0;      // z ... translate ... -z forward
-        this.strafeSpeed   = 3.0;      // x ... translate
+        this.strafeSpeed   = 10.0;     // x ... translate
         this.pitchSpeed    = 0.8;      // x ... rotate
         this.yawSpeed      = 2.0;      // y ... rotate
         this.rollSpeed     = 1.8;      // z ... rotate
@@ -354,8 +354,8 @@ export class Camera6DOF
         this.vLookTarget = new THREE.Vector3();
         this.vWorldUp    = new THREE.Vector3();
         this.camWeldPoint     = new THREE.Vector3(0, 4, 12); // Ideal chase position
-        this.camRadius        = 1.5;                         // Max displacement sphere
-        this.camLerpSpeed     = 4.0;                         // How fast it returns to target
+        this.camRadius        = 2.5;                         // Max displacement sphere
+        this.camLerpSpeed     = 3.0;                         // How fast it returns to target
         this.camInertia       = 0.5;                         // Sensitivity to movement
         
 
@@ -420,7 +420,7 @@ export class Camera6DOF
    
              // combine welded cam point + above lags into a "target" position
             this.vTargetPos.set(
-                this.camWeldPoint.x - lagX,
+                this.camWeldPoint.x + lagX,
                 this.camWeldPoint.y - lagY,
                 this.camWeldPoint.z + lagZ
             );
@@ -519,7 +519,7 @@ export class Camera6DOF
         ** Strafe **
         **        **
         ***********/
-        this.strafeThrust = THREE.MathUtils.clamp(this.strafeThrust, -2.0, 2.0);
+        this.strafeThrust = THREE.MathUtils.clamp(this.strafeThrust, -20.0, 20.0);
         if (Math.abs(this.strafeInpt) > this.deadZone)
         {
             this.strafeThrust += this.strafeInpt * this.strafeSpeed * this.dt;

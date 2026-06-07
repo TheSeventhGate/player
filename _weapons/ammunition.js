@@ -14,17 +14,60 @@ export class Laser
         const geometry = new THREE.CapsuleGeometry( 0.05, 2, 2, 8 );
         const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
+        // timing
+        this.dt = 0.0;
+
         // attributes
         this.mesh = new THREE.Mesh(geometry, material);
         this.velocity = new THREE.Vector3();
+        this.foward = new THREE.Vector3( 0, 0, -1 );
+        this.ammunitionSpeed = 400;
         this.alive = false;
         this.lifespan = 3.0; // Seconds before self-destruct
         this.age = 0;
     }
 
-    
+    /*
+        * @param {THREE.Vector3}    startPos - The player's current universe position
+        * @param {THREE.Quaternion} rotation - The player's current rotation
+        * @param {THREE.Group}      worldGroup - The group that contains all world objects
+    */
+    fired(startPos, rotation, worldGroup)
+    {
+        // initial state when fired
+        this.alive = true;
+        this.age = 0;
+
+        // initial state position and vector
+        this.mesh.getWorldPosition.copy(startPos); // start position in relation to worldSpace/worldGroup
+        this.mesh.applyQuaternion.copy(rotation);
+
+        // initial speed
+        this.velocity.copy(this.foward).multiplyScalar(this.ammunitionSpeed);
+
+    }
+
+    update(dt)
+    {
+        // if dead return
+        if(!this.alive) return;
+
+        // timing
+        this.dt = dt; 
+
+        // increment my current position in the universe space/worldpace/worldgroup
+        this.mesh.getWorldPosition.addScaledVector(this.velocity, this.dt);
+
+        
 
 
+
+    }
+
+    destroy()
+    {
+
+    }
 
 
 }
