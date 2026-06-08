@@ -6,22 +6,22 @@ import * as THREE from 'three/webgpu';
 ** Ammunition Type **
 **                 **
 ********************/
+// Laser shape, color, size
+const laserGeometry = new THREE.CapsuleGeometry( 0.05, 2, 2, 8 );
+const laserMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
     constructor()
     {
-        // shape, color, size
-        const geometry = new THREE.CapsuleGeometry( 0.05, 2, 2, 8 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-
         // timing
         this.dt = 0.0;
 
         // attributes
-        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh = new THREE.Mesh(laserGeometry, laserMaterial);
         this.velocity = new THREE.Vector3();
         this.foward = new THREE.Vector3( 0, 0, -1 );
-        this.ammunitionSpeed = 400;
+        this.ammunitionSpeed = 800;
         this.alive = false;
         this.lifespan = 3.0; // Seconds before self-destruct
         this.age = 0;
@@ -39,11 +39,14 @@ export class Laser
         this.age = 0;
 
         // initial state position and vector
-        this.mesh.getWorldPosition.copy(startPos); // start position in relation to worldSpace/worldGroup
-        this.mesh.applyQuaternion.copy(rotation);
+        this.mesh.position.copy(startPos); // start position in relation to worldSpace/worldGroup
+        this.mesh.quaternion.copy(rotation);
 
         // initial speed
-        this.velocity.copy(this.foward).multiplyScalar(this.ammunitionSpeed);
+        this.velocity.copy(this.foward).applyQuaternion(rotation).multiplyScalar(this.ammunitionSpeed);
+
+        // make the laser visible
+        worldGroup.add(this.mesh);
 
     }
 
@@ -55,17 +58,35 @@ export class Laser
         // timing
         this.dt = dt; 
 
+        // life span
+        this.age += dt;
+        if (this.age >= this.lifespan)
+        {
+            this.destroy();
+            return;
+        }
+
         // increment my current position in the universe space/worldpace/worldgroup
-        this.mesh.getWorldPosition.addScaledVector(this.velocity, this.dt);
+        this.mesh.position.addScaledVector(this.velocity, this.dt);
 
         
-
-
-
     }
 
     destroy()
     {
+        // if dead return
+        if(!this.alive) return;
+        this.alive = false;
+
+        // remove object from scene
+        if (this.mesh.parent)
+        {
+            this.mesh.parent.remove(this.mesh);
+        }
+
+        // remove object from GPU memory
+        // this.mesh.geometry.dispose();
+        // this.mesh.material.dispose();
 
     }
 

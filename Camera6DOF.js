@@ -176,6 +176,7 @@
 import * as THREE from 'three/webgpu';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Laser } from './_weapons/ammunition.js';
 
 export class Camera6DOF 
 {
@@ -474,6 +475,8 @@ export class Camera6DOF
         this.pitchInput = gp.axes[3];  // (pitch) 
 
         // buttons
+        this.leftTriggr = gp.buttons[6]; // <--- correct number?
+        this.rghtTriggr = gp.buttons[7];
         this.leftBumper = gp.buttons[4];
         this.rghtBumper = gp.buttons[5];
         this.buttonA    = gp.buttons[0]; // (A Button)
@@ -632,7 +635,7 @@ export class Camera6DOF
     ** DRAW           **
     **                **
     *******************/
-    update(gp, dt) // gp = gamepad ... dt = deltatime
+    update(gp, dt, worldGroup, activeMunitions) // gp = gamepad ... dt = deltatime
     {
 
         // increment time at the very start so the math changes
@@ -641,12 +644,26 @@ export class Camera6DOF
 
         // call members and apply
         this.processInputs(gp);
+
+        // shooting ammunition based on current position, rotation, vectors
+        if (this.rghtTriggr.pressed) {
+            const shot = new Laser();
+            shot.fired(this.position, this.rotation, worldGroup);
+            activeMunitions.push(shot);
+        }
+
+        // call members and apply
         this.translate(); 
         this.rotate();
         this.origin.quaternion.copy(this.rotation); // <-- world space implementation
 
         // camera follows player
         this.updateCamera();
+
+
+        
+
+
         
     }
 
