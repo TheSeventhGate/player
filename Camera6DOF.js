@@ -209,6 +209,7 @@ export class Camera6DOF
 
         // fire rate timer
         this.fireRateTimer = 0.0;
+        this.fireRate = 0.1;
 
         // origin root in relation to world space
         this.origin = new THREE.Object3D();
@@ -217,6 +218,15 @@ export class Camera6DOF
         // positioning and rotations in relation to origin
         this.position = new THREE.Vector3();
         this.rotation = new THREE.Quaternion();
+        this.rightShotPosition    = new THREE.Vector3(); // scratch vector for shooting logic
+        this.leftShotPosition     = new THREE.Vector3(); // scratch vector for shooting logic
+        this.centerShotPosition   = new THREE.Vector3(); // scratch vector for shooting logic
+        this.selectedShotPosition = new THREE.Vector3();
+        this.rightBool = true;
+        this.centerBool = false;
+
+
+
 
         // visual model in relation to root above (can be considered local space)
         // all edges and lines and mat below is for debug only
@@ -644,21 +654,50 @@ export class Camera6DOF
         // increment time at the very start so the math changes
         this.dt = dt;
         this.fireRateTimer += dt;
-        //console.log(this.fireRateTimer);
 
         // call members and apply
         this.processInputs(gp);
 
         // shooting ammunition based on current position, rotation, vectors
-        if (this.fireRateTimer > 0.2 && this.rghtTriggr.pressed)
+        if (this.fireRateTimer > this.fireRate && this.rghtTriggr.pressed)
         {
             this.fireRateTimer = 0;
-            // if (this.rghtTriggr.pressed) 
-            // {
+
+                // calculate start position ( to the right in LOCAL space)
+                // then rotate that offset to match ship, then add ship position
+                this.rightShotPosition.set(1.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
+                this.leftShotPosition.set(-1.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
+                this.centerShotPosition.set(0, 0, 0).applyQuaternion(this.rotation).add(this.position);  
+                this.selectedShotPosition.set(0, 0, 0).applyQuaternion(this.rotation).add(this.position); 
+
+                if (this.centerShotPosition)
+                {
+                    if (this.rightBool)
+                    {
+                        this.selectedShotPosition.copy(this.rightShotPosition);
+                    } 
+                    else
+                    {
+                        this.selectedShotPosition.copy(this.leftShotPosition);
+                    }
+                } 
+                else 
+                {
+                    this.selectedShotPosition.copy(this.centerShotPosition);
+                }
+
+
                 const shot = new Laser();
-                shot.fire(this.position, this.rotation, worldGroup);
+                shot.fire  (
+                    this.selectedShotPosition,
+                    this.rotation,
+                    worldGroup
+                );
                 activeMunitions.push(shot);
-            // }
+
+                this.rightBool = this.rightBool ? false : true;
+
+
         }
 
         // call members and apply

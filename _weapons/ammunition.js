@@ -7,7 +7,7 @@ import * as THREE from 'three/webgpu';
 **                 **
 ********************/
 // Laser shape, color, size
-const laserGeometry = new THREE.CapsuleGeometry( 0.05, 2, 2, 8 );
+const laserGeometry = new THREE.CapsuleGeometry( 0.5, 2, 2, 8 );
 const laserMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 // laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
