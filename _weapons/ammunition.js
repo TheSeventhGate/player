@@ -9,7 +9,7 @@ import * as THREE from 'three/webgpu';
 // Laser shape, color, size
 const laserGeometry = new THREE.CapsuleGeometry( 0.05, 2, 2, 8 );
 const laserMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-laserGeometry.rotateX(Math.PI / 2); 
+// laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
     constructor()
@@ -23,16 +23,12 @@ export class Laser
         this.foward = new THREE.Vector3( 0, 0, -1 );
         this.ammunitionSpeed = 800;
         this.alive = false;
-        this.lifespan = 3.0; // Seconds before self-destruct
+        this.lifespan = 3.0; // seconds before self-destruct
         this.age = 0;
     }
 
-    /*
-        * @param {THREE.Vector3}    startPos - The player's current universe position
-        * @param {THREE.Quaternion} rotation - The player's current rotation
-        * @param {THREE.Group}      worldGroup - The group that contains all world objects
-    */
-    fired(startPos, rotation, worldGroup)
+
+    fire(startPos, rotation, worldGroup)
     {
         // initial state when fired
         this.alive = true;
@@ -68,7 +64,6 @@ export class Laser
 
         // increment my current position in the universe space/worldpace/worldgroup
         this.mesh.position.addScaledVector(this.velocity, this.dt);
-
         
     }
 

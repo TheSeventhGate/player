@@ -207,6 +207,9 @@ export class Camera6DOF
         // timing
         this.dt = 0.0;
 
+        // fire rate timer
+        this.fireRateTimer = 0.0;
+
         // origin root in relation to world space
         this.origin = new THREE.Object3D();
         scene.add(this.origin);
@@ -640,16 +643,22 @@ export class Camera6DOF
 
         // increment time at the very start so the math changes
         this.dt = dt;
-        this.timeElapsed += dt;
+        this.fireRateTimer += dt;
+        //console.log(this.fireRateTimer);
 
         // call members and apply
         this.processInputs(gp);
 
         // shooting ammunition based on current position, rotation, vectors
-        if (this.rghtTriggr.pressed) {
-            const shot = new Laser();
-            shot.fired(this.position, this.rotation, worldGroup);
-            activeMunitions.push(shot);
+        if (this.fireRateTimer > 0.2 && this.rghtTriggr.pressed)
+        {
+            this.fireRateTimer = 0;
+            // if (this.rghtTriggr.pressed) 
+            // {
+                const shot = new Laser();
+                shot.fire(this.position, this.rotation, worldGroup);
+                activeMunitions.push(shot);
+            // }
         }
 
         // call members and apply
@@ -660,11 +669,6 @@ export class Camera6DOF
         // camera follows player
         this.updateCamera();
 
-
-        
-
-
-        
     }
 
     /*******************
