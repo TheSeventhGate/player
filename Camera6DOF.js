@@ -186,7 +186,7 @@ export class Camera6DOF
     ** Construct      **
     **                **
     *******************/
-    constructor(scene, worldGroup, activeMunitions)
+    constructor(scene, worldGroup, activeMunitions, trails)
     {
 
         // SCENE (The Global Container)
@@ -211,6 +211,7 @@ export class Camera6DOF
         this.fireRateTimer = 0.0;
         this.fireRate = 0.1;
         this.munitions = activeMunitions;
+        this.trail = trails;
 
         // origin root in relation to world space
         this.world = worldGroup;
@@ -695,7 +696,8 @@ export class Camera6DOF
                 ** SHOOTING       **
                 **                **
                 *******************/
-                const shot = new Laser(this.world);
+               // player --> laser --> trails
+                const shot = new Laser(this.world, this.trail);
                 shot.fire  (
                     this.selectedShotPosition,
                     this.rotation

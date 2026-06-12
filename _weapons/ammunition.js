@@ -9,18 +9,19 @@ import { LaserTrail } from '../_weapons_vxf/trails.js';
 ********************/
 // Laser shape, color, size
 const laserGeometry = new THREE.CapsuleGeometry( 0.5, 2, 2, 8 );
-const laserMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xff0000} );
 // laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
-    constructor(worldGroup)
+    constructor(worldGroup, trails)
     {
         // timing
         this.dt = 0.0;
 
         // attributes
         this.mesh = new THREE.Mesh(laserGeometry, laserMaterial);
-        this.world = worldGroup
+        this.world = worldGroup;
+        this.trail = trails;
         this.myPosition = new THREE.Vector3();
         this.velocity = new THREE.Vector3();
         this.forward = new THREE.Vector3( 0, 0, -1 );
@@ -34,7 +35,6 @@ export class Laser
 
 
     }
-
 
     fire(startPos, rotation)
     {
@@ -52,7 +52,6 @@ export class Laser
 
         // make the laser visible
         this.world.add(this.mesh);
-
     }
     
     /*******************
@@ -74,20 +73,32 @@ export class Laser
         {
             this.destroy();
             return;
-
         }
 
         // increment my current position in the universe space/worldpace/worldgroup
         this.mesh.position.addScaledVector(this.velocity, this.dt);
         this.myPosition.copy(this.mesh.position);
 
-        // const myTrail = new LaserTrail();
-        // myTrail.start(
-        //     this.myPosition,
-        //     this.rotation,
-        //     worldGroup
-        // );
-        // trails.push(myTrail);
+        // i can controll how many trail planes are created by tuning a few factors
+        // one of the most important factors is how old is this laser and should i
+        // still continue to trail even though this laser is still alive
+        if (this.age < this.lifespan / 8) // <-- halflife
+        {  
+            const myTrail = new LaserTrail(this.world);
+            myTrail.start(
+                this.myPosition,
+                this.rotation
+            );
+            this.trail.push(myTrail);
+            //   (this.lifespan / 1) = i noticed if i spam lasers i can reach an upper limit of 4000+ objs if i dont use halflife
+            //   (this.lifespan / 2) = 2000+ upper limit
+            //   (this.lifespan / 3) = 1600+ upper limit
+            //   (this.lifespan / 4) = 1100+ upper limit
+            //   (this.lifespan / 8) = 590+  upper limit
+            //   etc...
+               
+        }
+
 
         
     }

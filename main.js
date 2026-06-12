@@ -380,7 +380,7 @@ let trails = [];
 **                  **
 *********************/
 // slaved to 6dof obj --> ALL objects in javascript are passed by reference
-const player = new Camera6DOF(scene, worldGroup, activeMunitions); // 6dof custom class
+const player = new Camera6DOF(scene, worldGroup, activeMunitions, trails); // 6dof custom class
 player.mountCamera(camera);
 
 
@@ -520,6 +520,11 @@ function animate( time )
       }
     }
   }
+
+  // debug how big can trails get?
+  console.log(trails.length);
+  //console.clear();
+
 
   // renderer
   renderer.render( scene, camera );

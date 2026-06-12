@@ -11,13 +11,14 @@ const laserTrailMaterialGeometry = new THREE.MeshBasicMaterial( {color: 0x00ff00
 
 export class LaserTrail
 {
-    constructor()
+    constructor(worldGroup)
     {
         // timing
         this.dt = 0.0;
 
         // attributes
         this.instancedMesh = new THREE.Mesh(laserTrailPlaneGeometry, laserTrailMaterialGeometry);
+        this.world = worldGroup;
         this.myPosition = new THREE.Vector3();
         this.velocity = new THREE.Vector3();
         this.forward = new THREE.Vector3( 0, 0, -1 );
@@ -28,7 +29,7 @@ export class LaserTrail
 
     }
 
-    start(startPos, rotation, worldGroup)
+    start(startPos, rotation)
     {
         // initial state when started
         this.alive = true;
@@ -42,7 +43,7 @@ export class LaserTrail
         this.velocity.copy(this.forward).applyQuaternion(rotation).multiplyScalar(this.floatSpeed);
 
         // make the laser visible
-        worldGroup.add(this.instancedMesh);
+        this.world.add(this.instancedMesh);
 
     }
 
@@ -75,7 +76,7 @@ export class LaserTrail
         // remove object from scene
         if (this.instancedMesh.parent)
         {
-            this.instancedMesh.parent.remove(this.mesh);
+            this.instancedMesh.parent.remove(this.instancedMesh);
         }
     }
 
