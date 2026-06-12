@@ -360,6 +360,19 @@ worldGroup.add(theGrid);
 theGrid.position.y = -2;
 
 
+/*****************
+**              **
+** AMMUNITIONS  **
+**              **
+*****************/
+let activeMunitions = [];
+
+/*****************
+**              **
+** VFX          **
+**              **
+*****************/
+let trails = [];
 
 /*********************
 **                  **
@@ -367,7 +380,7 @@ theGrid.position.y = -2;
 **                  **
 *********************/
 // slaved to 6dof obj --> ALL objects in javascript are passed by reference
-const player = new Camera6DOF(scene); // 6dof custom class
+const player = new Camera6DOF(scene, worldGroup, activeMunitions); // 6dof custom class
 player.mountCamera(camera);
 
 
@@ -436,12 +449,7 @@ shipLight_03_Mesh.position.copy(shipLight_03.position);
 //scene.add(shipLight_03_Mesh);
 
 
-/*****************
-**              **
-** AMMUNITIONS  **
-**              **
-*****************/
-let activeMunitions = [];
+
 
 /*******************
 **                ** 
@@ -464,8 +472,12 @@ function animate( time )
   // windows xbox controller
   const gp = getGamepad();
 
-  // player
-  player.update(gp, dt, worldGroup, activeMunitions); // returns NULL
+  /********************
+  **                 **
+  ** Player          ** (Camera.6DOF.js)
+  **                 **
+  ********************/
+  player.update(gp, dt); // returns NULL
 
   // stats
   stats.update();
@@ -474,13 +486,39 @@ function animate( time )
   // .negate() turns (0, 0, 10) into (0, 0, -10)
    worldGroup.position.copy(player.position).negate();
 
-  // amunition updates and lifespans
+  /********************
+  **                 **
+  ** Ammunition      **
+  **                 **
+  ********************/
   if (activeMunitions.length > 0)
   {
     activeMunitions.forEach(element => {
       element.update(dt);
     });
-    activeMunitions = activeMunitions.filter(element => element.alive); // which items do i want to KEEP
+    // TO THIS (Modify the array in place)
+    for (let i = activeMunitions.length - 1; i >= 0; i--) {
+      if (!activeMunitions[i].alive) {
+          activeMunitions.splice(i, 1);
+      }
+    }
+  }
+
+  /********************
+  **                 **
+  ** Trails          **
+  **                 **
+  ********************/
+  if(trails.length > 0)
+  {
+    trails.forEach(element => {
+      element.update(dt, worldGroup);
+    });
+    for (let i = trails.length - 1; i >= 0; i--){
+      if (!trails[i].alive) {
+        trails.splice(i, 1);
+      }
+    }
   }
 
   // renderer

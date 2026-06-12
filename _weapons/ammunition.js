@@ -1,5 +1,6 @@
 // ammunition.js
 import * as THREE from 'three/webgpu';
+import { LaserTrail } from '../_weapons_vxf/trails.js';
 
 /********************
 **                 **
@@ -12,23 +13,30 @@ const laserMaterial = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 // laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
-    constructor()
+    constructor(worldGroup)
     {
         // timing
         this.dt = 0.0;
 
         // attributes
         this.mesh = new THREE.Mesh(laserGeometry, laserMaterial);
+        this.world = worldGroup
+        this.myPosition = new THREE.Vector3();
         this.velocity = new THREE.Vector3();
-        this.foward = new THREE.Vector3( 0, 0, -1 );
-        this.ammunitionSpeed = 800;
+        this.forward = new THREE.Vector3( 0, 0, -1 );
+        this.ammunitionSpeed = 800; //800
         this.alive = false;
         this.lifespan = 3.0; // seconds before self-destruct
         this.age = 0;
+
+        // arguments to pass to trail
+        this.rotation = new THREE.Quaternion();
+
+
     }
 
 
-    fire(startPos, rotation, worldGroup)
+    fire(startPos, rotation)
     {
         // initial state when fired
         this.alive = true;
@@ -37,15 +45,21 @@ export class Laser
         // initial state position and vector
         this.mesh.position.copy(startPos); // start position in relation to worldSpace/worldGroup
         this.mesh.quaternion.copy(rotation);
+        this.rotation.copy(rotation);
 
         // initial speed
-        this.velocity.copy(this.foward).applyQuaternion(rotation).multiplyScalar(this.ammunitionSpeed);
+        this.velocity.copy(this.forward).applyQuaternion(rotation).multiplyScalar(this.ammunitionSpeed);
 
         // make the laser visible
-        worldGroup.add(this.mesh);
+        this.world.add(this.mesh);
 
     }
-
+    
+    /*******************
+    **                **
+    ** DRAW           **
+    **                **
+    *******************/
     update(dt)
     {
         // if dead return
@@ -60,10 +74,21 @@ export class Laser
         {
             this.destroy();
             return;
+
         }
 
         // increment my current position in the universe space/worldpace/worldgroup
         this.mesh.position.addScaledVector(this.velocity, this.dt);
+        this.myPosition.copy(this.mesh.position);
+
+        // const myTrail = new LaserTrail();
+        // myTrail.start(
+        //     this.myPosition,
+        //     this.rotation,
+        //     worldGroup
+        // );
+        // trails.push(myTrail);
+
         
     }
 
@@ -79,13 +104,7 @@ export class Laser
             this.mesh.parent.remove(this.mesh);
         }
 
-        // remove object from GPU memory
-        // this.mesh.geometry.dispose();
-        // this.mesh.material.dispose();
-
     }
-
-
 }
 
 /********************

@@ -186,7 +186,7 @@ export class Camera6DOF
     ** Construct      **
     **                **
     *******************/
-    constructor(scene)
+    constructor(scene, worldGroup, activeMunitions)
     {
 
         // SCENE (The Global Container)
@@ -210,8 +210,10 @@ export class Camera6DOF
         // fire rate timer
         this.fireRateTimer = 0.0;
         this.fireRate = 0.1;
+        this.munitions = activeMunitions;
 
         // origin root in relation to world space
+        this.world = worldGroup;
         this.origin = new THREE.Object3D();
         scene.add(this.origin);
 
@@ -224,9 +226,6 @@ export class Camera6DOF
         this.selectedShotPosition = new THREE.Vector3();
         this.rightBool = true;
         this.centerBool = false;
-
-
-
 
         // visual model in relation to root above (can be considered local space)
         // all edges and lines and mat below is for debug only
@@ -357,7 +356,7 @@ export class Camera6DOF
         // camera
         this.camera           = null;
         this.timeElapsed      = 0.0;
-        this.cameraFrequency  = 1.2;  
+        this.cameraFrequency  = 2.2;  
         this.cameraAmplitude  = 0.002;
         this.cameraBasePos    = 0.0;
 
@@ -371,7 +370,6 @@ export class Camera6DOF
         this.camRadius        = 2.5;                         // Max displacement sphere
         this.camLerpSpeed     = 3.0;                         // How fast it returns to target
         this.camInertia       = 0.5;                         // Sensitivity to movement
-        
 
     }
 
@@ -645,20 +643,25 @@ export class Camera6DOF
 
     /*******************
     **                **
-    ** DRAW           **
+    ** DRAW           ** (player.update)
     **                **
     *******************/
-    update(gp, dt, worldGroup, activeMunitions) // gp = gamepad ... dt = deltatime
+    update(gp, dt) // gp = gamepad ... dt = deltatime
     {
 
         // increment time at the very start so the math changes
         this.dt = dt;
+        this.timeElapsed += dt;
         this.fireRateTimer += dt;
 
         // call members and apply
         this.processInputs(gp);
 
-        // shooting ammunition based on current position, rotation, vectors
+        /*******************
+        **                **
+        ** WHAT TO SHOOT  **
+        **                **
+        *******************/
         if (this.fireRateTimer > this.fireRate && this.rghtTriggr.pressed)
         {
             this.fireRateTimer = 0;
@@ -687,16 +690,19 @@ export class Camera6DOF
                 }
 
 
-                const shot = new Laser();
+                /*******************
+                **                **
+                ** SHOOTING       **
+                **                **
+                *******************/
+                const shot = new Laser(this.world);
                 shot.fire  (
                     this.selectedShotPosition,
-                    this.rotation,
-                    worldGroup
+                    this.rotation
                 );
-                activeMunitions.push(shot);
+                this.munitions.push(shot);
 
                 this.rightBool = this.rightBool ? false : true;
-
 
         }
 
