@@ -199,6 +199,7 @@
 import * as THREE from 'three/webgpu';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { Player } from './player.js';
+import { InstancedTrails } from './_weapons_vxf/instancedTrails.js';
 import Stats from 'three/addons/libs/stats.module.js'; // <-- no braces needed becuase its a default export
 const scene = new THREE.Scene();
 
@@ -374,13 +375,20 @@ let activeMunitions = [];
 *****************/
 let trails = [];
 
+/**************************
+**                        **
+** INSTANCED MESH SECTION **
+**                        **
+***************************/
+const instancedTrails = new InstancedTrails(worldGroup);
+
 /*********************
 **                  **
 ** PLAYER + CAMERA  **
 **                  **
 *********************/
 // slaved to 6dof obj --> ALL objects in javascript are passed by reference
-const player = new Player(scene, worldGroup, activeMunitions, trails); // 6dof custom class
+const player = new Player(scene, worldGroup, activeMunitions, trails, instancedTrails); // 6dof custom class
 player.mountCamera(camera);
 
 /*******************
@@ -447,8 +455,6 @@ shipLight_03_Mesh.position.copy(shipLight_03.position);
 //scene.add(shipLight_03_Mesh);
 
 
-
-
 /*******************
 **                ** 
 ** MAIN GAME LOOP **
@@ -504,7 +510,7 @@ function animate( time )
 
   /********************
   **                 **
-  ** Trails          **
+  ** Old Trails      **
   **                 **
   ********************/
   if(trails.length > 0)
@@ -520,8 +526,17 @@ function animate( time )
   }
 
   // debug how big can trails get?
-  console.log(trails.length);
+  //console.log(trails.length);
   //console.clear();
+
+  /********************
+  **                 **
+  ** New Instance    **
+  ** Trails          **
+  **                 **
+  ********************/
+  instancedTrails.update(dt, camera);
+
 
 
   // renderer

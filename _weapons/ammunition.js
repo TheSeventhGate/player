@@ -15,7 +15,8 @@ const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xffb3b3} );
 //laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
-    constructor(worldGroup, trails)
+    // constructor(worldGroup, trails) // <-- old spawn (may still be valid for other effect tests later)
+    constructor(worldGroup, instancedTrails)
     {
         // timing
         this.dt = 0.0;
@@ -23,7 +24,8 @@ export class Laser
         // attributes
         this.mesh = new THREE.Mesh(laserGeometry, laserMaterial);
         this.world = worldGroup;
-        this.trail = trails;
+        // this.trail = trails; // <-- old spawn (may still be valid for other effect tests later)
+        this.instancedTrails = instancedTrails;
         this.myPosition = new THREE.Vector3();
         this.velocity = new THREE.Vector3();
         this.forward = new THREE.Vector3( 0, 0, -1 );
@@ -81,28 +83,48 @@ export class Laser
         this.mesh.position.addScaledVector(this.velocity, this.dt);
         this.myPosition.copy(this.mesh.position);
 
-        // i can controll how many trail planes are created by tuning a few factors
-        // one of the most important factors is how old is this laser and should i
-        // still continue to trail even though this laser is still alive
-        if (this.age < this.lifespan / 4) // <-- halflife
-        {  
-            const myTrail = new LaserTrail(this.world);
-            myTrail.start(
-                this.myPosition,
-                this.rotation
-            );
-            this.trail.push(myTrail);
-            //   (this.lifespan / 1) = i noticed if i spam lasers i can reach an upper limit of 4000+ objs if i dont use halflife
-            //   (this.lifespan / 2) = 2000+ upper limit
-            //   (this.lifespan / 3) = 1600+ upper limit
-            //   (this.lifespan / 4) = 1100+ upper limit
-            //   (this.lifespan / 8) = 590+  upper limit
-            //   etc...
+
+        /*******************
+        **                **
+        ** OLD TRAILS     **
+        ** SYSTEM SPAWN   **
+        *******************/
+        // // i can controll how many trail planes are created by tuning a few factors
+        // // one of the most important factors is how old is this laser and should i
+        // // still continue to trail even though this laser is still alive
+        // if (this.age < this.lifespan / 4) // <-- halflife
+        // {  
+        //     const myTrail = new LaserTrail(this.world);
+        //     myTrail.start(
+        //         this.myPosition,
+        //         this.rotation
+        //     );
+        //     this.trail.push(myTrail);
+        //     //   (this.lifespan / 1) = i noticed if i spam lasers i can reach an upper limit of 4000+ objs if i dont use halflife
+        //     //   (this.lifespan / 2) = 2000+ upper limit
+        //     //   (this.lifespan / 3) = 1600+ upper limit
+        //     //   (this.lifespan / 4) = 1100+ upper limit
+        //     //   (this.lifespan / 8) = 590+  upper limit
+        //     //   etc...
                
+        // }
+
+
+        /*******************
+        **                **
+        ** NEW TRAILS     **
+        ** SYSTEM SPAWN   **
+        *******************/
+        this.forwardDir = this.velocity.clone().normalize();
+        if (this.age < this.lifespan / 4)
+        {
+            this.instancedTrails.spawn(
+                this.myPosition,
+                this.velocity.clone().multiplyScalar(0.05)
+            );
         }
 
 
-        
     }
 
     destroy()

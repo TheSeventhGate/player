@@ -186,7 +186,7 @@ export class Player
     ** Construct      **
     **                **
     *******************/
-    constructor(scene, worldGroup, activeMunitions, trails)
+    constructor(scene, worldGroup, activeMunitions, trails, instancedTrails)
     {
 
         // SCENE (The Global Container)
@@ -212,6 +212,7 @@ export class Player
         this.fireRate = 0.1;
         this.munitions = activeMunitions;
         this.trail = trails;
+        this.instancedTrails = instancedTrails;
 
         // origin root in relation to world space
         this.world = worldGroup;
@@ -697,7 +698,7 @@ export class Player
                 **                **
                 *******************/
                // player --> laser --> trails
-                const shot = new Laser(this.world, this.trail);
+                const shot = new Laser(this.world, this.instancedTrails);
                 shot.fire  (
                     this.selectedShotPosition,
                     this.rotation
