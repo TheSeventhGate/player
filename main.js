@@ -172,30 +172,27 @@
             $ = MAJOR THRUSTER
         */
 
-// SCENE (The Global Container)
-// │
-// ├── worldGroup [MOVES ↔️] (The "Universe" container)
-// │   │   // Everything inside here slides in reverse to your inputs
-// │   ├── theGrid
-// │   ├── testSurfaceObj (The Floor)
-// │   └── [Planets / Stars / Stations] (Future objects)
-// │
-// └── player.origin [ROTATES 🔄] (Fixed at 0, 0, 0)
-//     │   // This is YOUR ship. It never leaves 0,0,0. It only spins.
-//     ├── mesh (Debug Box)
-//     ├── shapeLines (Debug Edges)
-//     ├── shipModel (The Actual OBJ)
-//     └── camera [FOLLOWS 🎥] (Slave to player movement)
-// this file: "main.js"
-
-
+        // SCENE (The Global Container)
+        // │
+        // ├── worldGroup [MOVES ↔️] (The "Universe" container)
+        // │   │   // Everything inside here slides in reverse to your inputs
+        // │   ├── theGrid
+        // │   ├── testSurfaceObj (The Floor)
+        // │   └── [Planets / Stars / Stations] (Future objects)
+        // │
+        // └── player.origin [ROTATES 🔄] (Fixed at 0, 0, 0)
+        //     │   // This is YOUR ship. It never leaves 0,0,0. It only spins.
+        //     ├── mesh (Debug Box)
+        //     ├── shapeLines (Debug Edges)
+        //     ├── shipModel (The Actual OBJ)
+        //     └── camera [FOLLOWS 🎥] (Slave to player movement)
+        // this file: "main.js"
 
 /*******************
 **                ** 
 ** INITILIZATIONS **
 **                **
 *******************/
-//import * as THREE from 'three';
 import * as THREE from 'three/webgpu';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { Player } from './player.js';

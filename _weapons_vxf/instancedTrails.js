@@ -1,3 +1,4 @@
+// instancedTrails.js
 import * as THREE from 'three/webgpu';
 
 export class InstancedTrails
