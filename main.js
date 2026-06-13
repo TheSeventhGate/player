@@ -198,7 +198,7 @@
 //import * as THREE from 'three';
 import * as THREE from 'three/webgpu';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { Camera6DOF } from './Camera6DOF.js';
+import { Player } from './player.js';
 import Stats from 'three/addons/libs/stats.module.js'; // <-- no braces needed becuase its a default export
 const scene = new THREE.Scene();
 
@@ -380,7 +380,7 @@ let trails = [];
 **                  **
 *********************/
 // slaved to 6dof obj --> ALL objects in javascript are passed by reference
-const player = new Camera6DOF(scene, worldGroup, activeMunitions, trails); // 6dof custom class
+const player = new Player(scene, worldGroup, activeMunitions, trails); // 6dof custom class
 player.mountCamera(camera);
 
 

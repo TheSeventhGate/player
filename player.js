@@ -178,7 +178,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Laser } from './_weapons/ammunition.js';
 
-export class Camera6DOF 
+export class Player 
 {
 
     /*******************
