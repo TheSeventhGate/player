@@ -383,8 +383,6 @@ let trails = [];
 const player = new Player(scene, worldGroup, activeMunitions, trails); // 6dof custom class
 player.mountCamera(camera);
 
-
-
 /*******************
 **                **
 ** LIGHTING       **

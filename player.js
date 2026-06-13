@@ -669,8 +669,8 @@ export class Player
 
                 // calculate start position ( to the right in LOCAL space)
                 // then rotate that offset to match ship, then add ship position
-                this.rightShotPosition.set(1.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
-                this.leftShotPosition.set(-1.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
+                this.rightShotPosition.set(2.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
+                this.leftShotPosition.set(-2.5, 0, 0).applyQuaternion(this.rotation).add(this.position);
                 this.centerShotPosition.set(0, 0, 0).applyQuaternion(this.rotation).add(this.position);  
                 this.selectedShotPosition.set(0, 0, 0).applyQuaternion(this.rotation).add(this.position); 
 

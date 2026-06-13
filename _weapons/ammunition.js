@@ -8,9 +8,11 @@ import { LaserTrail } from '../_weapons_vxf/trails.js';
 **                 **
 ********************/
 // Laser shape, color, size
-const laserGeometry = new THREE.CapsuleGeometry( 0.5, 2, 2, 8 );
-const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xff00ff} );
-laserGeometry.rotateX(Math.PI / 2); 
+//const laserGeometry = new THREE.CapsuleGeometry( 0.3, 2, 2, 8 );
+const laserGeometry = new THREE.BoxGeometry( 1.0, 1.0);
+
+const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xffb3b3} );
+//laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
     constructor(worldGroup, trails)
@@ -82,7 +84,7 @@ export class Laser
         // i can controll how many trail planes are created by tuning a few factors
         // one of the most important factors is how old is this laser and should i
         // still continue to trail even though this laser is still alive
-        if (this.age < this.lifespan / 8) // <-- halflife
+        if (this.age < this.lifespan / 4) // <-- halflife
         {  
             const myTrail = new LaserTrail(this.world);
             myTrail.start(

@@ -6,9 +6,9 @@ import * as THREE from 'three/webgpu';
 ** Trail Type **
 **            **
 ***************/
-const laserTrailPlaneGeometry = new THREE.PlaneGeometry(0.2,0.2,1,1);
+const laserTrailPlaneGeometry = new THREE.PlaneGeometry(0.5,0.5,1,1);
 const laserTrailMaterialGeometry = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
+      color: 0x660000,
       transparent: true,
       opacity: 1.0
 });
@@ -21,7 +21,7 @@ export class LaserTrail
         this.dt = 0.0;
 
         // attributes
-        this.instancedMesh = new THREE.Mesh(
+        this.mesh = new THREE.Mesh(
             laserTrailPlaneGeometry,
             laserTrailMaterialGeometry.clone()
         );
@@ -30,8 +30,8 @@ export class LaserTrail
         this.velocity = new THREE.Vector3();
         this.randomDirection = new THREE.Vector3();
         this.forward = new THREE.Vector3( 0, 0, -1 );
-        this.floatSpeed = 1;
-        this.spreadSpeed = 0.85;
+        this.floatSpeed = 5;
+        this.spreadSpeed = 0.75;
         this.alive = false;
         this.lifespan = 1.0; // seconds before self-destruct
         this.lifePercent = 0;
@@ -45,17 +45,17 @@ export class LaserTrail
         this.alive = true;
         this.age = 0;
 
-        this.instancedMesh.material.opacity = 1.0;
+        this.mesh.material.opacity = 1.0;
 
         // initial state position and vector
-        this.instancedMesh.position.copy(startPos); // start position in relation to worldSpace/worldGroup
-        this.instancedMesh.quaternion.copy(rotation);
+        this.mesh.position.copy(startPos); // start position in relation to worldSpace/worldGroup
+        this.mesh.quaternion.copy(rotation);
  
         // initial speed
         this.velocity.copy(this.forward).applyQuaternion(rotation).multiplyScalar(this.floatSpeed);
 
         // make the laser visible
-        this.world.add(this.instancedMesh);
+        this.world.add(this.mesh);
 
         // random x =
         const randX = THREE.MathUtils.randFloatSpread(1.0);
@@ -101,11 +101,11 @@ export class LaserTrail
         );
 
         // increment my current position in the universe space/worldpace/worldgroup
-        this.instancedMesh.position.addScaledVector(this.velocity, this.dt);
+        this.mesh.position.addScaledVector(this.velocity, this.dt);
 
         // remainning life visuall
         this.lifePercent = this.age / 0.60
-        this.instancedMesh.material.opacity = 1.0 - this.lifePercent;
+        this.mesh.material.opacity = 1.0 - this.lifePercent;
 
     }
 
@@ -116,9 +116,9 @@ export class LaserTrail
         this.alive = false;
 
         // remove object from scene
-        if (this.instancedMesh.parent)
+        if (this.mesh.parent)
         {
-            this.instancedMesh.parent.remove(this.instancedMesh);
+            this.mesh.parent.remove(this.mesh);
         }
     }
 
