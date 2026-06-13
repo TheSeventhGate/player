@@ -10,8 +10,7 @@ import { LaserTrail } from '../_weapons_vxf/trails.js';
 // Laser shape, color, size
 //const laserGeometry = new THREE.CapsuleGeometry( 0.3, 2, 2, 8 );
 const laserGeometry = new THREE.BoxGeometry( 1.0, 1.0);
-
-const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xffb3b3} );
+const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xffe6e6} );
 //laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
@@ -36,8 +35,6 @@ export class Laser
 
         // arguments to pass to trail
         this.rotation = new THREE.Quaternion();
-
-
     }
 
     fire(startPos, rotation)
@@ -47,12 +44,24 @@ export class Laser
         this.age = 0;
 
         // initial state position and vector
-        this.mesh.position.copy(startPos); // start position in relation to worldSpace/worldGroup
+        this.mesh.position.copy(startPos);
         this.mesh.quaternion.copy(rotation);
         this.rotation.copy(rotation);
 
+        // base forward direction
+        const dir = this.forward.clone().applyQuaternion(rotation);
+
+        // 🔥 shotgun spread (small random cone)
+        const spread = 0.05; // tweak: 0.005 = tight laser, 0.05 = wild shotgun
+
+        dir.x += THREE.MathUtils.randFloatSpread(spread);
+        dir.y += THREE.MathUtils.randFloatSpread(spread);
+        dir.z += THREE.MathUtils.randFloatSpread(spread);
+
+        dir.normalize();
+
         // initial speed
-        this.velocity.copy(this.forward).applyQuaternion(rotation).multiplyScalar(this.ammunitionSpeed);
+        this.velocity.copy(dir).multiplyScalar(this.ammunitionSpeed);
 
         // make the laser visible
         this.world.add(this.mesh);

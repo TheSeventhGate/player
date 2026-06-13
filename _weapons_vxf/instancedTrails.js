@@ -149,8 +149,10 @@ export class InstancedTrails
                 t.quaternion.copy(this._scratchQuat);
 
                 const c = new THREE.Color();
-                //c.setRGB(life, life * 0.3, life * 0.1); // <-- fade strength
-                c.setRGB(life, life * 0.2, life * 0.05);
+                // c.setRGB(life, life * 0.3, life * 0.1); // <-- fade strength
+                // c.setRGB(life, life * 0.2, life * 0.05);
+                const l = Math.pow(life, 6.0);
+                c.setRGB(l, 0, 0);
                 this.mesh.setColorAt(i, c);
 
 
