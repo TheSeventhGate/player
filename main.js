@@ -341,7 +341,7 @@ const testSurface = new THREE.PlaneGeometry(100,100);
 //       metalness: 0.5
 // });
 const testSurfaceMat = new THREE.MeshBasicMaterial({
-      color: 0x7a7272,      // Gray as a hex value
+      color: 0x2b2b2b,      // Gray as a hex value
       side: THREE.DoubleSide,
 });
 const testSurfaceObj = new THREE.Mesh(testSurface, testSurfaceMat);
@@ -354,7 +354,7 @@ testSurfaceObj.position.y = -2;
 testSurfaceObj.rotation.x = -Math.PI / 2;
 
 // test grid matching floor position
-const theGrid = new THREE.GridHelper(100, 50, 0x40ecf0, 0x40ecf0);
+const theGrid = new THREE.GridHelper(100, 20, 0x40ecf0, 0x40ecf0);
 //scene.add(theGrid);
 worldGroup.add(theGrid);
 theGrid.position.y = -2;

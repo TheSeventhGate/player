@@ -9,8 +9,8 @@ import { LaserTrail } from '../_weapons_vxf/trails.js';
 ********************/
 // Laser shape, color, size
 const laserGeometry = new THREE.CapsuleGeometry( 0.5, 2, 2, 8 );
-const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-// laserGeometry.rotateX(Math.PI / 2); 
+const laserMaterial = new THREE.MeshBasicMaterial( {color: 0xff00ff} );
+laserGeometry.rotateX(Math.PI / 2); 
 export class Laser 
 {
     constructor(worldGroup, trails)
