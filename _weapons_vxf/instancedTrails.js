@@ -22,7 +22,7 @@ export class InstancedTrails
         this.mesh.frustumCulled = false; // Prevent particles from disappearing when they travel far
 
         // trail.js similar effects
-        this.baseSpeed = 2.0;     // forward speed like your laser
+        this.baseSpeed = 4.0;     // forward speed like your laser
         this.spreadSpeed = 4.0;  // sideways drift strength
         this.driftStrength = 2.0; // global multiplier 
         this.material.vertexColors = true;
